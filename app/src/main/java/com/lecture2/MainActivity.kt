@@ -100,47 +100,17 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     
     private fun handleAccelerometerData(event: SensorEvent) {
 
-        val (x, y, z) = event.values
-        Log.d("SensorValue", "x=$x,y=$y,z=$z")//TODO: No8.Logcatでセンサーの生データを観測する
-
-
-
-
-            // TODO: No1. 3軸の加速度から合成加速度を計算しよう
-            // ヒント1: 3次元空間のベクトルの大きさは √(x² + y² + z²) で求められます
-            // ヒント2: kotlin.math.sqrt() 関数で平方根を計算できます
-            // ヒント3: sqrt()はDouble型を受け取るので、計算結果を.toDouble()してから渡します
-            // ヒント4: 最終的にFloat型に戻すため、.toFloat()で変換します
-            // 例: kotlin.math.sqrt((数値).toDouble()).toFloat()
-
-            val acceleration =___
-
-            // TODO: No2. 加速度が閾値を超えたかチェックしよう
-            // ヒント: if文で acceleration と shakeThreshold を比較します
-            if (___) {
-
-                // TODO: No3. 現在の時刻を取得しよう
-                // ヒント: System.currentTimeMillis() でミリ秒単位の現在時刻を取得できます
-                val currentTime =___
-
-                // TODO: No4. 前回の振動検知から十分な時間が経過したかチェックしよう
-                // ヒント1: (現在時刻 - 前回の時刻) で経過時間を計算します
-                // ヒント2: 経過時間が shakeInterval より大きければ、振動として認識します
-                if (___) {
-
-                    // TODO: No5. 前回の振動時刻を更新しよう
-                    // ヒント: lastShakeTime に現在時刻を代入します
-                    lastShakeTime = ___
-
-                    // TODO: No6. ライトの状態を反転させよう
-                    // ヒント1: !演算子でboolean値を反転できます
-                    // ヒント2: isLightOn が true なら false に、false なら true にします
-                    isLightOn = ___
-
-                    // TODO: No7. ライトをオン/オフしよう
-                    // ヒント: toggleLight(boolean) 関数に新しいライトの状態を渡します
-                   ___
-                }
+        val x = event.values[0]
+        val y = event.values[1]
+        val z = event.values[2]
+        Log.d("SensorValue", "x: $x, y: $y, z: $z")
+        val acceleration = kotlin.math.sqrt((x * x + y * y + z * z).toDouble()).toFloat()
+        if (acceleration > shakeThreshold) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastShakeTime > shakeInterval) {
+                isLightOn = !isLightOn
+                toggleLight(isLightOn)
+                lastShakeTime = currentTime
             }
         }
     }
